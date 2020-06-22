@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<body>
+  <section class="loginform cf">
+    <form name="login" action="api/v1/login" method="post" accept-charset="utf-8">
+      <ul>
+        <li>
+          <label for="accesskey">aws_access_key_id</label>
+          <input name="accesskey" required>
+        </li>
+        <li>
+          <label for="secretkey">aws_secret_access_key</label>
+          <input type="password" name="secretkey" required>
+        </li>
+        <li>
+          <input type="submit" value="Login">
+        </li>
+      </ul>
+    </form>
+  </section>
+</body>
+</html>
