@@ -4,12 +4,9 @@
   "description": "k8s dashboard proxy for IAM authentication",
   "main": "proxy.js",
   "dependencies": {
-    "aws-sdk": "^2.695.0",
     "body-parser": "^1.19.0",
     "connect": "^3.7.0",
-    "crypto-js": "^4.0.0",
     "http-proxy": "^1.18.1",
-    "moment": "^2.26.0",
     "request": "^2.88.2"
   },
   "devDependencies": {},
