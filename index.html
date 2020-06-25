@@ -8,7 +8,6 @@
       function sendData(accesskey,secretkey){
         const XHR = new XMLHttpRequest();
         XHR.addEventListener( "load", function(event) {
-          console.log(encodeURI(JSON.parse(event.target.responseText)["jweToken"]));
           document.cookie = "jweToken=" + encodeURI(JSON.parse(event.target.responseText)["jweToken"]);
           window.location.replace("http://localhost:8000");
         } );
@@ -39,12 +38,9 @@
           <label for="secretkey">aws_secret_access_key</label>
           <input type="password" name="secretkey" id="secretkey" required>
         </li>
-        <li>
-          <input type="submit" value="Login">
-        </li>
       </ul>
     </form>
-    <button id="button">get token</button>
+    <button id="button">login</button>
   </section>
 </body>
 </html>

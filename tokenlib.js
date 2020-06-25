@@ -8,8 +8,8 @@ CANONICAL_URI = '/';
 METHOD = 'GET';
 ENDPOINT = 'https://sts.amazonaws.com/'
 REQUEST_PARAMETERS = 'Action=GetCallerIdentity&Version=2011-06-15'
-//AMZDATE = moment.utc().format("YYYYMMDD[T]hhmmss[Z]");
-AMZDATE = "20200625T132434Z";
+AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
+//AMZDATE = "20200625T132434Z";
 DATESTAMP = moment.utc().format("YYYYMMDD");
 //DATESTAMP = "20200624";
 

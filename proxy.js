@@ -41,7 +41,8 @@ var server = http.createServer(function(req, res) {
               'X-CSRF-TOKEN': JSON.parse(body)["token"]
             },
             body: {
-              'token': '<add your token here>'},
+              'token': JSON.parse(token)["token"]
+            },
             json: true
           }
           console.log(options);
