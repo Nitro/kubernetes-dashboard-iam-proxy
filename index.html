@@ -9,7 +9,8 @@
         const XHR = new XMLHttpRequest();
         XHR.addEventListener( "load", function(event) {
           document.cookie = "jweToken=" + encodeURI(JSON.parse(event.target.responseText)["jweToken"]);
-          window.location.replace("http://localhost:8000");
+          //window.location.replace("http://localhost:8000");
+          location.reload ();
         } );
         XHR.addEventListener( "error", function( event ) {
           alert( 'Oops! Something went wrong.' );
@@ -26,7 +27,7 @@
     });
   </script>
 </head>
-<body>
+<body id="body">
   <section class="loginform cf">
     <form name="login" id="login" action="/login" method="post" accept-charset="utf-8">
       <ul>
