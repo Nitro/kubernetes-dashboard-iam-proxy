@@ -1,15 +1,15 @@
 ALGORITHM = 'AWS4-HMAC-SHA256';
-REGION = 'eu-central-1';
-HOST = 'sts.eu-central-1.amazonaws.com'
+REGION = 'us-east-1';
+HOST = 'sts.amazonaws.com'
 SERVICE = 'sts';
 STS_TOKEN_EXPIRES_IN = 60;
 SIGNED_HEADERS = 'host;x-k8s-aws-id';
 CANONICAL_URI = '/';
 METHOD = 'GET';
-ENDPOINT = 'https://sts.eu-central-1.amazonaws.com/'
+ENDPOINT = 'https://sts.amazonaws.com/'
 REQUEST_PARAMETERS = 'Action=GetCallerIdentity&Version=2011-06-15'
-AMZDATE = moment.utc().format("YYYYMMDD[T]hhmmss[Z]");
-//AMZDATE = "20200624T082515Z";
+AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
+//AMZDATE = "20200625T132434Z";
 DATESTAMP = moment.utc().format("YYYYMMDD");
 //DATESTAMP = "20200624";
 
@@ -58,14 +58,13 @@ get_string_to_sign = function(accesskey){
 build_signature = function(accesskey,secret_key){
   var signing_key = get_signature_key(secret_key);
   var string_to_sign = get_string_to_sign(accesskey);
-  console.log(string_to_sign);
   return CryptoJS.HmacSHA256(CryptoJS.enc.Utf8.parse(string_to_sign),signing_key);
 }
 
 get_bearer_token = function(accesskey,secretkey){
   var bearer_token = build_query_parameters(accesskey,secretkey);
   base64_url = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(bearer_token));
-  return 'k8s-aws-v1.' + base64_url.replace(/=*/g,'');
+  return 'k8s-aws-v1.' + base64_url.replace(/=*/g,'').replace("/","_").replace("+","-");
 }
 
 build_query_parameters = function(accesskey,secretkey){

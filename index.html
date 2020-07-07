@@ -8,7 +8,9 @@
       function sendData(accesskey,secretkey){
         const XHR = new XMLHttpRequest();
         XHR.addEventListener( "load", function(event) {
-          alert( event.target.responseText );
+          document.cookie = "jweToken=" + encodeURI(JSON.parse(event.target.responseText)["jweToken"]);
+          //window.location.replace("http://localhost:8000");
+          location.reload ();
         } );
         XHR.addEventListener( "error", function( event ) {
           alert( 'Oops! Something went wrong.' );
@@ -16,7 +18,6 @@
         XHR.open( "POST", "http://localhost:8000/login" );
         XHR.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         const token = get_bearer_token(accesskey,secretkey);
-        console.log(token)
         XHR.send(JSON.stringify({"token": token}));
       }
       const button = document.getElementById( "button" );
@@ -26,7 +27,7 @@
     });
   </script>
 </head>
-<body>
+<body id="body">
   <section class="loginform cf">
     <form name="login" id="login" action="/login" method="post" accept-charset="utf-8">
       <ul>
@@ -38,12 +39,9 @@
           <label for="secretkey">aws_secret_access_key</label>
           <input type="password" name="secretkey" id="secretkey" required>
         </li>
-        <li>
-          <input type="submit" value="Login">
-        </li>
       </ul>
     </form>
-    <button id="button">get token</button>
+    <button id="button">login</button>
   </section>
 </body>
 </html>

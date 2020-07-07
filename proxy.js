@@ -2,13 +2,28 @@ var http = require('http'),
     httpProxy = require('http-proxy'),
     fs = require('fs').promises,
     request = require('request'),
-    url = require('url');
+    url = require('url'),
+    modifyResponse = require('node-http-proxy-json');
+
 
 var proxy = httpProxy.createProxyServer({});
+
+var parseCookies = function(request) {
+    var list = {},
+        rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+}
 
 var server = http.createServer(function(req, res) {
   // You can define here your custom logic to handle the request
   // and then proxy the request.
+  console.log(req.headers.referer);
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8000");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   const regex = RegExp('(index\.html|tokenlib\.js)');
@@ -24,8 +39,25 @@ var server = http.createServer(function(req, res) {
             return;
         });
   }
+  else if(url.parse(req.url,true).pathname == '/'){
+    console.log(parseCookies(req));
+    if(parseCookies(req)["jweToken"]){ //if session token is set user has already logged in
+      proxy.web(req, res, { target: 'http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/' });
+    }else{ //session token is not set so serve the login screen
+      fs.readFile(__dirname + "/index.html")
+        .then(contents => {
+            res.writeHead(200);
+            res.end(contents);
+        })
+        .catch(err => {
+              res.writeHead(500);
+              res.end(err);
+              return;
+          });
+    }
+  }
   //handle the login flow here
-  if(url.parse(req.url,true).pathname == '/login'){
+  else if(url.parse(req.url,true).pathname == '/login'){
     let token = [];
     req.on('data', (chunk) => {
       token.push(chunk);
@@ -49,26 +81,54 @@ var server = http.createServer(function(req, res) {
           request.post(options).pipe(res);
         })
     });
-  }else{ //proxy all other requests to upstream dashboard
-    console.log("proxying to upstream");
+  }else if(url.parse(req.url,true).pathname == '/reload'){
+    fs.readFile(__dirname + "/reload.html")
+      .then(contents => {
+          res.writeHead(200);
+          res.end(contents);
+      })
+      .catch(err => {
+            res.writeHead(500);
+            res.end(err);
+            return;
+        });
+  }else if(url.parse(req.url,true).pathname == '/api/v1/login/status'){
+    if(parseCookies(req)["jweToken"]){ //if session token is set user has already logged in
+      proxy.web(req, res, { target: 'http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/' });
+    }else{ //session token is not set so serve the login screen
+      fs.readFile(__dirname + "/reload.html")
+        .then(contents => {
+            res.writeHead(200);
+            res.end(contents);
+        })
+        .catch(err => {
+              res.writeHead(500);
+              res.end(err);
+              return;
+          });
+    }
+  }
+  else{ //proxy all other requests to upstream dashboard
     proxy.web(req, res, { target: 'http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/' });
   }
 });
 
 console.log("listening on port 8000")
 server.listen(8000);
+//use this to redirect to login screen if /status returns tokenPresent : false
 proxy.on('proxyRes',function(proxyRes, req, res, options){
-  if(req['url'] == '/api/v1/login/skippable' && req['method'] == 'GET'){
-    let body = Buffer.from('')
-    proxyRes.on('data', function(dataBuffer) {
-      body = Buffer.concat([body, dataBuffer])
-      var data = dataBuffer.toString();
-      console.log('This is the data from target server : ' + data);
+  if(req['url'] == '/api/v1/login/status' && req['method'] == 'GET'){
+    modifyResponse(res, proxyRes, function (body) {
+        if (body && !body.tokenPresent) {
+          console.log(body);
+          //res.writeHead(302, { 'Location': '/index.html', 'Cache-Control': 'no-cache'});
+          //res.writeHead(200, { 'Cache-Control': 'no-cache'});
+          return body;
+        }else{
+          console.log(body);
+          return body;
+        }
     });
-
-    proxyRes.on('end', () => {
-    console.log("TCL: end", body.toString('utf8'))
-    })
   }
 });
 
