@@ -8,11 +8,14 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 
+// Config is global to the app
+global.appConfig = require('./config/default.json');
+
 var app = express();
 const proxy = createProxyMiddleware({
-  target: 'http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/',
+  target: 'http://'+global.appConfig.kubeProxy.host+':'+global.appConfig.kubeProxy.port+'/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/',
   changeOrigin: true, // for vhosted sites, changes host header to match to target's host
-  logLevel: 'debug',
+  logLevel: global.appConfig.logLevel,
 });
 
 // view engine setup
