@@ -1,8 +1,0 @@
-{
-    "kubeProxy": {      
-        "host": "localhost",
-        "port": "8001"
-      
-    },
-    "logLevel": "debug"
-  }

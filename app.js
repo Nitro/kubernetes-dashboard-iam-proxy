@@ -10,12 +10,12 @@ var loginRouter = require('./routes/login')
 
 
 // Config is global to the app
-global.appConfig = require('./config/default.json');
+global.appConfig = require('./config/default');
 
 var app = express()
 
 const proxy = createProxyMiddleware({
-  target: 'http://'+global.appConfig.kubeProxy.host+':'+global.appConfig.kubeProxy.port+'/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/',
+  target: global.appConfig.upstreamDashboard.url,
   changeOrigin: true, // for vhosted sites, changes host header to match to target's host
   logLevel: global.appConfig.logLevel,
 })
@@ -23,6 +23,7 @@ const proxy = createProxyMiddleware({
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.engine('html', require('ejs').renderFile)
+app.set('view engine', 'html');
 
 app.use(logger('dev'))
 app.use(cors())
@@ -31,6 +32,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use('/', indexRouter)
 app.use('/login', loginRouter)
+//app.get('/index.html', function(req, res) {
+//  res.render('index', { proxyURL : global.appConfig.proxy.url, proxyPort : global.appConfig.proxy.port });
+//});
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', proxy)
 
