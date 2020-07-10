@@ -9,9 +9,9 @@ router.post('/', function(req, res, next) {
   upstreamHost = global.appConfig.upstreamDashboard.url;
 
   request
-    .get(upstreamHost + 'api/v1/csrftoken/login',function(error,response,body){
+    .get(upstreamHost + '/api/v1/csrftoken/login',function(error,response,body){
       const options = {
-        url: upstreamHost + 'api/v1/login',
+        url: upstreamHost + '/api/v1/login',
         headers: {
           'X-CSRF-TOKEN': JSON.parse(body).token
         },
