@@ -9,12 +9,14 @@ router.get('/', function (req, res, next) {
     console.error('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode);
     if(error != null || response.statusCode != 200){
+      console.log("unable to contact upstream kubernetes dashboard")
       res.status(503).send();
     }else{
       try {
 		      res.send(200, JSON.stringify({ status: 'ok' }));
 	    } catch (e) {
 		      res.status(503).send();
+          console.error('error:', e);
 	    }
     }
   });

@@ -30,6 +30,14 @@ console.log("listening on port " + port)
 server.on('error', onError);
 server.on('listening', onListening);
 
+process.on('SIGTERM', () => {
+  console.info('SIGTERM signal received.');
+  console.log('Closing http server.');
+  server.close(() => {
+    console.log('Http server closed.');
+  });
+});
+
 /**
  * Normalize a port into a number, string, or false.
  */
