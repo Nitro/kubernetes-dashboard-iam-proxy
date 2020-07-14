@@ -10,4 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build .  --tag gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD) && docker push gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD)
+      run: docker build .  --tag gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD)
+    - name: Docker Login
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+    - name: Docker Push
+      run: docker push gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD)
