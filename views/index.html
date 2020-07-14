@@ -13,7 +13,7 @@
         XHR.addEventListener('load', function (event) {
           document.cookie = 'jweToken=' + encodeURI(JSON.parse(event.target.responseText).jweToken)
           // window.location.replace("http://localhost:8000");
-          location.reload()
+          //location.reload()
         })
         XHR.addEventListener('error', function (event) {
           alert('Oops! Something went wrong.')
@@ -30,10 +30,39 @@
         sendData(document.getElementById('accesskey').value, document.getElementById('secretkey').value)
       })
     })
+    var parseCookies = function (request) {
+      var list = {}
+      var rc = request.headers.cookie
+      rc && rc.split(';').forEach(function (cookie) {
+        var parts = cookie.split('=')
+        list[parts.shift().trim()] = decodeURI(parts.join('='))
+      })
+      return list
+    }
+    var checkCookie = function() {
+      var lastCookie = document.cookie; // 'static' memory between function calls
+      return function() {
+        var currentCookie = document.cookie;
+        var list = {}
+        currentCookie.split(';').forEach(function (cookie) {
+          var parts = cookie.split('=')
+          list[parts.shift().trim()] = decodeURI(parts.join('='))
+        })
+        if(list.jweToken){
+          document.getElementById("login").style.display = 'none';
+          document.getElementById("dashboard-content").style.display = 'block';
+        }else{
+          document.getElementById("login").style.display = 'block';
+          document.getElementById("dashboard-content").style.display = 'none';
+        }
+        lastCookie = currentCookie; // store latest cookie
+      };
+    }();
+    window.setInterval(checkCookie, 100); // run every 100 ms
   </script>
 </head>
 <body>
-  <div class="main">
+  <div class="main" id="login">
     <p class="sign" align="center">Sign in the Kubernetes Dashboard</p>
     <form class="form1">
       <input class="un " type="text" align="center" placeholder="aws_access_key_id" id="accesskey" required>
@@ -41,5 +70,9 @@
       <a class="submit" align="center" id="button">Sign in</a>
     </form>
   </div>
+  <iframe id="dashboard-content" width="1000" height="700"
+          src="http://localhost:8001/api/v1/namespaces/tools/services/http:kubernetes-dashboard:80/proxy"
+          sandbox="allow-scripts allow-same-origin">
+  </iframe>
 </body>
 </html>

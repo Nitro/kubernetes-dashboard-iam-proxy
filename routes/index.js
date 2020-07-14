@@ -15,7 +15,7 @@ var parseCookies = function (request) {
 /* GET login page. */
 router.get('/', function (req, res, next) {
   if (parseCookies(req).jweToken) { // if session token is set user has already logged in
-    next()
+    res.render('index.html',{ proxyURL : global.appConfig.proxy.url, proxyPort : global.appConfig.proxy.port })
   } else { // session token is not set so serve the login screen
     res.render('index.html',{ proxyURL : global.appConfig.proxy.url, proxyPort : global.appConfig.proxy.port })
   }
