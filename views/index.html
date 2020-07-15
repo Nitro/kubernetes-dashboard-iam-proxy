@@ -12,6 +12,7 @@
         const XHR = new XMLHttpRequest()
         XHR.addEventListener('load', function (event) {
           document.cookie = 'jweToken=' + encodeURI(JSON.parse(event.target.responseText).jweToken)
+          document.cookie = 'authMode=token'
           // window.location.replace("http://localhost:8000");
           location.reload()
         })
