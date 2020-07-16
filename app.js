@@ -41,7 +41,8 @@ const proxy = createProxyMiddleware({
       Object.keys(proxyRes.headers).forEach((key) => {
           res.append(key, proxyRes.headers[key]);
       });
-      if (proxyRes.headers['content-type'] && proxyRes.headers['content-type'].includes('text/html')) {
+      if (req.path === '/' && proxyRes.headers['content-type'] && proxyRes.headers['content-type'].includes('text/html')) {
+        //inject custom javascript only for the homepage
         const bodyString = zlib.gunzipSync(originalBody).toString('utf8');
         let customScript = '<script type="text/javascript" src="javascripts/watchsession.js"></script>'
         const newBody = bodyString.slice(0,bodyString.lastIndexOf("</head>")) +
