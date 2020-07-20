@@ -26,21 +26,43 @@
         const token = get_bearer_token(accesskey, secretkey)
         XHR.send(JSON.stringify({ token: token }))
       }
-      const button = document.getElementById('button')
-      button.addEventListener('click', function (event) {
+      function createRipple (e) {
+        var circle = document.createElement('div');
+        this.appendChild(circle);
+        var d = Math.max(this.clientWidth, this.clientHeight);
+        circle.style.width = circle.style.height = d + 'px';
+        var rect = this.getBoundingClientRect();
+        circle.style.left = e.clientX - rect.left -d/2 + 'px';
+        circle.style.top = e.clientY - rect.top - d/2 + 'px';
+        circle.classList.add('ripple');
+      	setTimeout(function(){
+          circle.remove();
+      	},500);
         sendData(document.getElementById('accesskey').value, document.getElementById('secretkey').value)
-      })
+      }
+      const button = document.getElementById('button')
+      button.addEventListener('click', createRipple)
     })
   </script>
 </head>
 <body>
-  <div class="main">
-    <p class="sign" align="center">Sign in the Kubernetes Dashboard</p>
-    <form class="form1">
-      <input class="un " type="text" align="center" placeholder="aws_access_key_id" id="accesskey" required>
-      <input class="pass" type="password" align="center" placeholder="aws_secret_access_key" id="secretkey" required>
-      <a class="submit" align="center" id="button">Sign in</a>
-    </form>
+  <div class="card">
+	   <div class="card-title">
+       <p class="text">Kubernetes Dashboard</p>
+	   </div>
+	   <div class="card-desc">
+       <div class="input">
+         <input type="text" placeholder="Name" id="accesskey" required/>
+         <label for="Name">aws_access_key_id</label>
+       </div>
+       <div class="input">
+         <input type="password" placeholder="Password" id="secretkey" required/>
+         <label for="Password">aws_secret_access_key</label>
+       </div>
+	   </div>
+	   <div class="card-actions">
+		     <button type='button' id='button' class='card-action-readMore'>Sign in</button>
+	   </div>
   </div>
 </body>
 </html>

@@ -1,105 +1,147 @@
+html {
+  height: 100%;
+}
+
+p {
+  padding: 20px;
+  margin: 0px;
+  font-family: "Roboto", "Helvetica Neue", Sans-Serif;
+  font-weight: 400;
+}
+
 body {
-  background-color: #E5F0FF;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Roboto";
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
 }
 
-.main {
-  background-color: #FFFFFF;
-  width: 400px;
-  height: 400px;
-  margin: 7em auto;
-  border-radius: 1.5em;
-  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-}
-
-.sign {
-  padding-top: 40px;
-  color: #5199FF;
-  font-family: 'Ubuntu', sans-serif;
-  font-weight: bold;
-  font-size: 23px;
-}
-
-.un {
-  width: 76%;
-  color: rgb(38, 50, 56);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 1px;
-  background: rgba(136, 126, 126, 0.04);
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  outline: none;
+.card {
+  display: inline-block;
+  width: 30%;
+  min-width: 400px;
   box-sizing: border-box;
-  border: 2px solid rgba(0, 0, 0, 0.02);
-  margin-bottom: 50px;
-  margin-left: 46px;
-  text-align: center;
-  margin-bottom: 27px;
-  font-family: 'Ubuntu', sans-serif;
+  box-shadow: 2px 2px 25px 0px rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  margin: 1em 1.5%;
+  animation: scl 0.5s ease-in-out;
+  transform-origin: left center;
+  background-color: #fff;
 }
-
-form.form1 {
-  padding-top: 40px;
-}
-
-.pass {
-  width: 76%;
-  color: rgb(38, 50, 56);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 1px;
-  background: rgba(136, 126, 126, 0.04);
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  outline: none;
-  box-sizing: border-box;
-  border: 2px solid rgba(0, 0, 0, 0.02);
-  margin-bottom: 50px;
-  margin-left: 46px;
-  text-align: center;
-  margin-bottom: 27px;
-  font-family: 'Ubuntu', sans-serif;
-}
-
-
-.un:focus, .pass:focus {
-  border: 2px solid rgba(0, 0, 0, 0.18) !important;
-
-}
-
-.submit {
-  cursor: pointer;
-  border-radius: 5em;
+.card-title {
   color: #fff;
-  background: linear-gradient(to right, #1FA5FF, #1053FF);
-  border: 0;
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  font-family: 'Ubuntu', sans-serif;
-  margin-left: 35%;
-  font-size: 13px;
-  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+  font-size: 20px;
+  width: 100%;
+  height: 60px;
+  background-color: #326DE6;
+}
+.card-desc {
+  padding: 0 1em 1em 1em;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+  overflow: hidden;
+  display: flex;
+  text-align: justify;
+  flex-direction: column;
+}
+.card-action-readMore {
+  margin: 1em 0 1em 1em;
+  height: 3em;
+  width: 8em;
+  background: #326DE6;
+  border: none;
+  font-weight: light;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  border-radius: 7px;
+}
+.card-action-readMore:hover {
+  background: rgba(50, 109, 230, 0.8);
+  transition: all 0.1s ease-in;
+}
+.card:hover {
+  box-shadow: 7px 7px 15px 2px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.3s ease-in;
 }
 
-.forgot {
-  text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
-  color: #E1BEE7;
-  padding-top: 15px;
+.input {
+  margin: 10px 0;
+  position: relative;
+  width: 300px;
 }
 
-a {
-  text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
-  color: #E1BEE7;
-  text-decoration: none
+input {
+  background: transparent;
+  border: none;
+  border-bottom: solid 1px #ccc;
+  padding: 20px 2px 5px;
+  transition: padding 0.4s;
+  width: 80%;
+}
+input:placeholder-shown + label {
+  color: #aaa;
+  font-size: 14px;
+  top: 15px;
+}
+input:focus + label {
+  color: #4476bd;
+  font-size: 12px;
+  pointer-events: none;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  transition: top 0.3s, left 0.3s, font-size 0.3s;
 }
 
-@media (max-width: 600px) {
-  .main {
-    border-radius: 0px;
+label {
+  color: #4476bd;
+  font-size: 12px;
+  pointer-events: none;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  transition: top 0.3s, left 0.3s, font-size 0.3s;
+}
+
+input::placeholder {
+  color: transparent;
+  display: none;
+}
+input:focus, input:not(:placeholder-shown) {
+  border-bottom: solid 1px #4476bd;
+  outline: none;
+}
+
+.ripple {
+  border-radius: 50%;
+  background: #99b6f3;
+  position: absolute;
+  transform: scale(0);
+  opacity: 1;
+  animation: ripple 0.4s linear;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
   }
 }
+@keyframes scl {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.9) translateX(-50px);
+  }
+  75% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: scaleX(1) translateX(0);
+    opacity: 1;
+  }
+}
+
+/*# sourceMappingURL=style.css.map */
