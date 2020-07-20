@@ -43,6 +43,7 @@ const proxy = createProxyMiddleware({
       });
       if (req.path === '/' && proxyRes.headers['content-type'] && proxyRes.headers['content-type'].includes('text/html')) {
         //inject custom javascript only for the homepage
+        console.log("injecting custom js")
         const bodyString = zlib.gunzipSync(originalBody).toString('utf8');
         let customScript = '<script type="text/javascript" src="javascripts/watchsession.js"></script>'
         const newBody = bodyString.slice(0,bodyString.lastIndexOf("</head>")) +
@@ -50,6 +51,7 @@ const proxy = createProxyMiddleware({
                         bodyString.slice(bodyString.lastIndexOf("</head>"));
         res.send(zlib.gzipSync(newBody));
       }else{
+        console.log("sending back response as is")
         res.send(originalBody);
       }
       res.end();
