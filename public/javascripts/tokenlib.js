@@ -40,34 +40,34 @@ get_canonical_query_string = function(accesskey){
        + 'X-Amz-SignedHeaders=' + encodeURIComponent(SIGNED_HEADERS);
 }
 
-get_canonical_request = function(accesskey){
+get_canonical_request = function(accesskey,clusterName){
   canonical_querystring = get_canonical_query_string(accesskey);
-  canonical_headers = 'host:' + HOST + '\n' + 'x-k8s-aws-id:' + 'nitro-eks-dev' + '\n';
+  canonical_headers = 'host:' + HOST + '\n' + 'x-k8s-aws-id:' + clusterName + '\n';
   var payload_hash = CryptoJS.SHA256('');
   return METHOD + '\n' + CANONICAL_URI + '\n' + canonical_querystring + '\n' + canonical_headers + '\n' + SIGNED_HEADERS + '\n' + payload_hash;
 }
 
-get_string_to_sign = function(accesskey){
+get_string_to_sign = function(accesskey, clusterName){
   var credential_scope = DATESTAMP + '/' + REGION + '/' + SERVICE + '/' + 'aws4_request';
-  var canonical_request = get_canonical_request(accesskey);
+  var canonical_request = get_canonical_request(accesskey, clusterName);
   return ALGORITHM + '\n' +  AMZDATE + '\n' +  credential_scope + '\n' +  CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(canonical_request));
 }
 
-build_signature = function(accesskey,secret_key){
+build_signature = function(accesskey,secret_key, clusterName){
   var signing_key = get_signature_key(secret_key);
-  var string_to_sign = get_string_to_sign(accesskey);
+  var string_to_sign = get_string_to_sign(accesskey, clusterName);
   return CryptoJS.HmacSHA256(CryptoJS.enc.Utf8.parse(string_to_sign),signing_key);
 }
 
-get_bearer_token = function(accesskey,secretkey){
+get_bearer_token = function(accesskey,secretkey, clusterName){
   AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
   DATESTAMP = moment.utc().format("YYYYMMDD");
-  var bearer_token = build_query_parameters(accesskey,secretkey);
+  var bearer_token = build_query_parameters(accesskey,secretkey, clusterName);
   base64_url = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(bearer_token));
   return 'k8s-aws-v1.' + base64_url.replace(/=*/g,'').replace("/","_").replace("+","-");
 }
 
-build_query_parameters = function(accesskey,secretkey){
+build_query_parameters = function(accesskey,secretkey, clusterName){
   return ENDPOINT + '?'
        + REQUEST_PARAMETERS + '&'
        + 'X-Amz-Algorithm=' + ALGORITHM + '&'
@@ -75,5 +75,5 @@ build_query_parameters = function(accesskey,secretkey){
        + 'X-Amz-Date=' + AMZDATE + '&'
        + 'X-Amz-Expires=' + STS_TOKEN_EXPIRES_IN + '&'
        + 'X-Amz-SignedHeaders=' + encodeURIComponent(SIGNED_HEADERS) + '&'
-       + 'X-Amz-Signature=' + build_signature(accesskey,secretkey);
+       + 'X-Amz-Signature=' + build_signature(accesskey,secretkey, clusterName);
 }

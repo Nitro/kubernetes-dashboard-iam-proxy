@@ -21,9 +21,10 @@
         })
         var proxyURL = <%- JSON.stringify(proxyURL) %>;
         var proxyPort = <%- JSON.stringify(proxyPort) %>;
+        var clusterName = <%- JSON.stringify(clusterName) %>;
         XHR.open('POST', proxyURL + ':' + proxyPort + '/login')
         XHR.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-        const token = get_bearer_token(accesskey, secretkey)
+        const token = get_bearer_token(accesskey, secretkey, clusterName)
         XHR.send(JSON.stringify({ token: token }))
       }
       function createRipple (e) {
