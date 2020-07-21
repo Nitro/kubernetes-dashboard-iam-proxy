@@ -8,10 +8,8 @@ CANONICAL_URI = '/';
 METHOD = 'GET';
 ENDPOINT = 'https://sts.amazonaws.com/'
 REQUEST_PARAMETERS = 'Action=GetCallerIdentity&Version=2011-06-15'
-AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
-//AMZDATE = "20200625T132434Z";
-DATESTAMP = moment.utc().format("YYYYMMDD");
-//DATESTAMP = "20200624";
+var AMZDATE;
+var DATESTAMP;
 
 sign = function(key, msg){
   return CryptoJS.HmacSHA256(msg, key);
@@ -62,6 +60,8 @@ build_signature = function(accesskey,secret_key){
 }
 
 get_bearer_token = function(accesskey,secretkey){
+  AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
+  DATESTAMP = moment.utc().format("YYYYMMDD");
   var bearer_token = build_query_parameters(accesskey,secretkey);
   base64_url = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(bearer_token));
   return 'k8s-aws-v1.' + base64_url.replace(/=*/g,'').replace("/","_").replace("+","-");
