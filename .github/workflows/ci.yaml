@@ -4,8 +4,24 @@ on:
   push:
     branches: [ master ]
 
+env:
+  NODE_VERSION: '10.x'
+
 jobs:
   build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: npm install and lint
+      run: |
+        # Build and test the project
+        npm install
+        npm run lint --if-present
+  push:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
