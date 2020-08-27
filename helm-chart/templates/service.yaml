@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "k8s-dashboard-proxy.fullname" . }}
+  labels:
+{{ include "k8s-dashboard-proxy.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: https-port
+  selector:
+    app.kubernetes.io/name: {{ include "k8s-dashboard-proxy.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

@@ -1,0 +1,79 @@
+# Default values for k8s-dashboard-proxy
+
+appVersion: "af49282"
+appName: "k8s-dashboard-proxy"
+
+name: k8s-dashboard-proxy
+kind: Deployment
+
+image:
+  repository: gonitro/k8s-dashboard-proxy
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: dockerhub
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 8888
+  livenessProbePath: /health
+  readinessProbePath: /health
+
+# Always 2 replicas, maximum 3 replicas and scales up if
+# it hits 75% of CPU usage or 75% of memory usage
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "100Mi"
+  # Limits are not recommended for multithread
+  # applications, see: https://learnk8s.io/production-best-practices/
+  limits:
+    cpu: "100m"
+    memory: "200Mi"
+
+nodeSelector: {}
+
+tolerations: []
+
+#affinity:
+#  nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: node-category.k8s.io/system
+#            operator: In
+#            values:
+#            - "true"
+
+envFrom: []
+
+env:
+  - name: UPSTREAM_DASHBOARD_URL
+    value: http://<K8S-DASHBOARD-SERVICE>.<K8S-DASHBOARD-NAMESPACE>
+  - name: PROXY_URL
+    value: <ADD-URL-FOR_PROXY>
+  - name: PROXY_PORT
+    value: "443"
+  - name: CLUSTER_NAME
+    value: <ADD-CLUSTER_NAME>

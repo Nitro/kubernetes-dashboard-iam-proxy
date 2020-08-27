@@ -1,0 +1,4 @@
+apiVersion: v1
+description: k8s-dashboard-iam-proxy
+name: k8s-dashboard-iam-proxy
+version: 1.0.0
