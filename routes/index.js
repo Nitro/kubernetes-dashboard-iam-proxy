@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
   if (parseCookies(req).jweToken) { // if session token is set user has already logged in
     next()
   } else { // session token is not set so serve the login screen
-    res.render('index.html',{ proxyURL : global.appConfig.proxy.url, proxyPort : global.appConfig.proxy.port ,clusterName: global.appConfig.clusterName})
+    res.render('index.html', { proxyURL: global.appConfig.proxy.url, proxyPort: global.appConfig.proxy.port, clusterName: global.appConfig.clusterName })
   }
 })
 

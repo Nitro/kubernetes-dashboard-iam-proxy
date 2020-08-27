@@ -1,5 +1,5 @@
 // Config is global to the app
-global.appConfig = require('./config/default');
+global.appConfig = require('./config/default')
 
 var createError = require('http-errors')
 var express = require('express')
@@ -10,7 +10,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
 var healthRouter = require('./routes/health')
-var zlib = require('zlib');
+var zlib = require('zlib')
 
 var app = express()
 
@@ -19,50 +19,50 @@ const proxy = createProxyMiddleware({
   changeOrigin: true, // for vhosted sites, changes host header to match to target's host
   logLevel: global.appConfig.logLevel,
   selfHandleResponse: true,
-  onProxyReq: function(proxyReq, req, res, options) {
+  onProxyReq: function (proxyReq, req, res, options) {
     if (req.body) {
-      let bodyData = JSON.stringify(req.body);
+      const bodyData = JSON.stringify(req.body)
       // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
-      proxyReq.setHeader('Content-Type','application/json');
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+      proxyReq.setHeader('Content-Type', 'application/json')
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
       // stream the content
-      proxyReq.write(bodyData);
+      proxyReq.write(bodyData)
     }
   },
-  onProxyRes: function(proxyRes, req, res, options){
-    let originalBody = Buffer.from([]);
+  onProxyRes: function (proxyRes, req, res, options) {
+    let originalBody = Buffer.from([])
     proxyRes.on('data', data => {
-      originalBody = Buffer.concat([originalBody, data]);
-    });
+      originalBody = Buffer.concat([originalBody, data])
+    })
     proxyRes.on('end', () => {
       // forwarding source status
-      res.status(proxyRes.statusCode);
+      res.status(proxyRes.statusCode)
       // forwarding source headers
       Object.keys(proxyRes.headers).forEach((key) => {
-          res.append(key, proxyRes.headers[key]);
-      });
+        res.append(key, proxyRes.headers[key])
+      })
       if (req.path === '/' && proxyRes.headers['content-type'] && proxyRes.headers['content-type'].includes('text/html')) {
-        //inject custom javascript only for the homepage
-        console.log("injecting custom js")
-        const bodyString = zlib.gunzipSync(originalBody).toString('utf8');
-        let customScript = '<script type="text/javascript" src="javascripts/watchsession.js"></script>'
-        const newBody = bodyString.slice(0,bodyString.lastIndexOf("</head>")) +
+        // inject custom javascript only for the homepage
+        console.log('injecting custom js')
+        const bodyString = zlib.gunzipSync(originalBody).toString('utf8')
+        const customScript = '<script type="text/javascript" src="javascripts/watchsession.js"></script>'
+        const newBody = bodyString.slice(0, bodyString.lastIndexOf('</head>')) +
                         customScript +
-                        bodyString.slice(bodyString.lastIndexOf("</head>"));
-        res.send(zlib.gzipSync(newBody));
-      }else{
-        console.log("sending back response as is")
-        res.send(originalBody);
+                        bodyString.slice(bodyString.lastIndexOf('</head>'))
+        res.send(zlib.gzipSync(newBody))
+      } else {
+        console.log('sending back response as is')
+        res.send(originalBody)
       }
-      res.end();
-    });
+      res.end()
+    })
   }
 })
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html');
+app.set('view engine', 'html')
 
 app.use(logger('short'))
 app.use(cors())
