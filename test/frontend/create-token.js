@@ -1,14 +1,16 @@
-//const expect    = require("chai").expect;
-//const tokenlib = require("../public/javascripts/tokenlib");
-//const moment = require('moment');
+const expect    = require("chai").expect;
+const moment = require('moment');
+const CryptoJS = require('crypto-js');
+const TokenLib = require("../../public/javascripts/tokenlib");
 
 describe("login token creation", function() {
   it("creates a signed base64 encoded token", function() {
     var accesskey = "XYZ"
     var secretkey = "UVW"
     var encrypted_token = "XYZUVW"
-    //const moment = require('moment');
-    console.log(get_bearer_token(accesskey,secretkey,"mycluster"))
-    chai.expect(accesskey+secretkey).to.equal(encrypted_token)
+    TokenLib.moment = moment
+    TokenLib.cryptojs = CryptoJS
+    console.log(TokenLib.get_bearer_token(accesskey,secretkey,"mycluster"))
+    expect(accesskey+secretkey).to.equal(encrypted_token)
   });
 });

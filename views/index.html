@@ -3,48 +3,14 @@
   <link rel="stylesheet" href="stylesheets/style.css">
   <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-  <script type="text/javascript" src="javascripts/tokenlib.js"></script>
   <script type="text/javascript">
     window.addEventListener('load', function () {
-      function sendData (accesskey, secretkey) {
-        const XHR = new XMLHttpRequest()
-        XHR.addEventListener('load', function (event) {
-          document.cookie = 'jweToken=' + encodeURI(JSON.parse(event.target.responseText).jweToken)
-          document.cookie = 'authMode=token'
-          // window.location.replace("http://localhost:8000");
-          location.reload()
-        })
-        XHR.addEventListener('error', function (event) {
-          alert('Oops! Something went wrong.')
-        })
-        var proxyURL = <%- JSON.stringify(proxyURL) %>;
-        var proxyPort = <%- JSON.stringify(proxyPort) %>;
-        var clusterName = <%- JSON.stringify(clusterName) %>;
-        XHR.open('POST', proxyURL + ':' + proxyPort + '/login')
-        XHR.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-        const token = get_bearer_token(accesskey, secretkey, clusterName)
-        XHR.send(JSON.stringify({ token: token }))
-      }
-      function createRipple (e) {
-        var circle = document.createElement('div');
-        this.appendChild(circle);
-        var d = Math.max(this.clientWidth, this.clientHeight);
-        circle.style.width = circle.style.height = d + 'px';
-        var rect = this.getBoundingClientRect();
-        circle.style.left = e.clientX - rect.left -d/2 + 'px';
-        circle.style.top = e.clientY - rect.top - d/2 + 'px';
-        circle.classList.add('ripple');
-      	setTimeout(function(){
-          circle.remove();
-      	},500);
-        sendData(document.getElementById('accesskey').value, document.getElementById('secretkey').value)
-      }
-      const button = document.getElementById('button')
-      button.addEventListener('click', createRipple)
+      window.proxyURL = <%- JSON.stringify(proxyURL) %>;
+      window.proxyPort = <%- JSON.stringify(proxyPort) %>;
+      window.clusterName = <%- JSON.stringify(clusterName) %>;
     })
   </script>
+  <script type="text/javascript" src="javascripts/bundle.js"></script>
 </head>
 <body>
   <div class="card">
