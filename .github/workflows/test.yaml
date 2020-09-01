@@ -1,4 +1,4 @@
-name: k8s-dashboard-proxy-ci
+name: k8s-dashboard-proxy-test
 
 on:
   pull_request:
