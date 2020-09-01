@@ -1,8 +1,8 @@
-const appConfig = require('../../config/default')
-
+const moment = require('moment');
+const cryptojs = require('crypto-js');
 const TokenLib = {
-  moment : require('moment'),
-  cryptojs : require('crypto-js'),
+  moment : moment,
+  cryptojs : cryptojs,
   ALGORITHM : 'AWS4-HMAC-SHA256',
   REGION : 'us-east-1',
   HOST : 'sts.amazonaws.com',
@@ -71,8 +71,6 @@ const TokenLib = {
          + 'X-Amz-Signature=' + TokenLib.build_signature(accesskey,secretkey, clusterName);
   },
   get_bearer_token : (accesskey,secretkey, clusterName) => {
-    TokenLib.AMZDATE = TokenLib.moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
-    TokenLib.DATESTAMP = TokenLib.moment.utc().format("YYYYMMDD");
     var bearer_token = TokenLib.build_query_parameters(accesskey,secretkey, clusterName);
     base64_url = TokenLib.cryptojs.enc.Base64.stringify(TokenLib.cryptojs.enc.Utf8.parse(bearer_token));
     return 'k8s-aws-v1.' + base64_url.replace(/=*/g,'').replace("/","_").replace("+","-");
@@ -93,7 +91,8 @@ window.addEventListener('load', function () {
     })
     XHR.open('POST', window.proxyURL + ':' + window.proxyPort + '/login')
     XHR.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-    console.log(window.clusterName)
+    TokenLib.AMZDATE = moment.utc().format("YYYYMMDD[T]HHmmss[Z]");
+    TokenLib.DATESTAMP = moment.utc().format("YYYYMMDD");
     const token = TokenLib.get_bearer_token(accesskey, secretkey, window.clusterName)
     console.log(token)
     XHR.send(JSON.stringify({ token: token }))
