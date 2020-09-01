@@ -1,7 +1,7 @@
 const expect    = require("chai").expect;
 const moment = require('moment');
 const CryptoJS = require('crypto-js');
-const TokenLib = require("../../public/javascripts/tokenlib");
+const TokenLib = require("../public/javascripts/tokenlib");
 
 describe("login token creation", function() {
   it("creates a signed base64 encoded token", function() {
