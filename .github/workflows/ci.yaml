@@ -1,14 +1,14 @@
-name: k8s-dashboard-proxy-ci
+name: k8s-dashboard-proxy-deploy
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
+    branches: [ master ]
 
 env:
   NODE_VERSION: '10.x'
 
 jobs:
-  build and test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -16,10 +16,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_VERSION }}
-    - name: npm install and lint
+    - name: npm build and deploy
       run: |
-        # Build and test the project
+        # Build
         npm install
-        npm run lint --if-present
-        npm audit
-        npm run test
+        npm install -g browserify
+        browserify public/javascripts/tokenlib.js > public/javascripts/bundle.js
+        docker build .  --tag gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD)
+        echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+        docker push gonitro/k8s-dashboard-proxy:$(git rev-parse --short HEAD)
