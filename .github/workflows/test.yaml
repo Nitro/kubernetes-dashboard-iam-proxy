@@ -23,7 +23,3 @@ jobs:
         npm run lint --if-present
         npm audit
         npm run test
-        ls public/javascripts
-        npm install -g browserify
-        browserify public/javascripts/tokenlib.js > public/javascripts/bundle.js
-        ls public/javascripts
