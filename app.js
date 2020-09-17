@@ -19,6 +19,7 @@ const proxy = createProxyMiddleware({
   changeOrigin: true, // for vhosted sites, changes host header to match to target's host
   logLevel: global.appConfig.logLevel,
   selfHandleResponse: true,
+  ws: true,
   onProxyReq: function (proxyReq, req, res, options) {
     if (req.body) {
       const bodyData = JSON.stringify(req.body)
